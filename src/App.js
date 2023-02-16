@@ -12,6 +12,9 @@ function App() {
 				<p>
 					Versão atualizada!
 				</p>
+				<p>
+					Mateus
+				</p>
 			</header>
 		</div>
 	);
