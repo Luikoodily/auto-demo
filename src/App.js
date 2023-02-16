@@ -9,6 +9,9 @@ function App() {
 				<p>
 					Autoupdater Demo v{process.env.REACT_APP_VERSION}
 				</p>
+				<p>
+					Versão atualizada!
+				</p>
 			</header>
 		</div>
 	);
