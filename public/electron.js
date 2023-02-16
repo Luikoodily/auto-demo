@@ -13,7 +13,9 @@ const createWindow = () => {
 		height: 800,
 		webPreferences: {
 			nodeIntegration: true,
-			enableRemoteModule: true
+			enableRemoteModule: true,
+			preload: path.join(__dirname, 'preload.js'),
+    		contextIsolation: true,
 		},
 	});
 
@@ -22,6 +24,10 @@ const createWindow = () => {
 			? "http://localhost:3000"
 			: `file://${path.join(__dirname, "../build/index.html")}`
 	);
+
+	win.once('ready-to-show', () => {
+		win.show()
+	});
 
 	// Open the DevTools.
 	if (isDev) {
@@ -92,18 +98,18 @@ autoUpdater.on("update-downloaded", (_event, releaseNotes, releaseName) => {
 });
 
 autoUpdater.on("download-progress", (progress, bytesPerSecond, percent, total, transferred) => {
-	const dialogOpts = {
-		type: 'info',
-		buttons: ['OK'],
-		title: 'INFO',
-		message: percent,
-		detail: 'fazendo download...'
-	};
+	// const dialogOpts = {
+	// 	type: 'info',
+	// 	buttons: ['OK'],
+	// 	title: 'INFO',
+	// 	message: percent,
+	// 	detail: 'fazendo download...'
+	// };
 
-	dialog.showMessageBox(dialogOpts).then((returnValue) => {
-		
-	})
+	// dialog.showMessageBox(dialogOpts).then((returnValue) => {
 
-	win.webContents.send('download-progress');
-})
+	// })
+
+	// win.webContents.send('download-progress');
+});
 
