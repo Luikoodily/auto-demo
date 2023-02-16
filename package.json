@@ -23,7 +23,8 @@
 		"web-vitals": "^2.1.4"
 	},
 	"scripts": {
-		"start": "concurrently \"cross-env BROWSER=none react-scripts start\" \"wait-on http://localhost:3000 && electron .\"",
+		"start": "BROWSER=none react-scripts start",
+		"electron": "wait-on http://localhost:3000 && electron .",
 		"build:prod": "react-scripts build && electron-builder --win",
 		"build:publish": "react-scripts build && electron-builder --win --publish always"
 	},

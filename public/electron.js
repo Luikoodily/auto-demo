@@ -1,12 +1,14 @@
 
 const path = require("path");
-const { app, dialog, BrowserWindow } = require("electron");
+const { app, dialog, BrowserWindow, ipcMain } = require("electron");
 const { autoUpdater } = require("electron-updater");
 const isDev = require("electron-is-dev");
 
+let win
+
 const createWindow = () => {
 	// Create the browser window.
-	const win = new BrowserWindow({
+	win = new BrowserWindow({
 		width: 1200,
 		height: 800,
 		webPreferences: {
@@ -23,13 +25,13 @@ const createWindow = () => {
 
 	// Open the DevTools.
 	if (isDev) {
-		win.webContents.openDevTools({ mode: "detach" });
+		win.webContents.openDevTools({ mode: "right" });
 		require('react-devtools-electron');
 	};
 
-	if (!isDev) {
-		autoUpdater.checkForUpdates();
-	};
+	// if (!isDev) {
+	// 	autoUpdater.checkForUpdates();
+	// };
 };
 
 // This method will be called when Electron has finished
@@ -54,6 +56,10 @@ app.on("activate", () => {
 	}
 });
 
+ipcMain.handle('check-for-updates', () => {
+	autoUpdater.checkForUpdates();
+});
+
 autoUpdater.on("update-available", (_event, releaseNotes, releaseName) => {
 	const dialogOpts = {
 		type: 'info',
@@ -65,6 +71,8 @@ autoUpdater.on("update-available", (_event, releaseNotes, releaseName) => {
 	dialog.showMessageBox(dialogOpts, (response) => {
 
 	});
+
+	win.webContents.send('update-available');
 })
 
 autoUpdater.on("update-downloaded", (_event, releaseNotes, releaseName) => {
@@ -75,13 +83,15 @@ autoUpdater.on("update-downloaded", (_event, releaseNotes, releaseName) => {
 		message: process.platform === 'win32' ? releaseNotes : releaseName,
 		detail: 'A new version has been downloaded. Restart the application to apply the updates.'
 	};
+
 	dialog.showMessageBox(dialogOpts).then((returnValue) => {
 		if (returnValue.response === 0) autoUpdater.quitAndInstall()
 	})
+
+	win.webContents.send('update-downloaded');
 });
 
 autoUpdater.on("download-progress", (progress, bytesPerSecond, percent, total, transferred) => {
-	console.log({progress, bytesPerSecond, percent, total, transferred})
 	const dialogOpts = {
 		type: 'info',
 		buttons: ['OK'],
@@ -89,8 +99,11 @@ autoUpdater.on("download-progress", (progress, bytesPerSecond, percent, total, t
 		message: percent,
 		detail: 'fazendo download...'
 	};
+
 	dialog.showMessageBox(dialogOpts).then((returnValue) => {
-		console.log({returnValue})
+		
 	})
+
+	win.webContents.send('download-progress');
 })
 
