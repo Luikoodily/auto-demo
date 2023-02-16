@@ -80,3 +80,17 @@ autoUpdater.on("update-downloaded", (_event, releaseNotes, releaseName) => {
 	})
 });
 
+autoUpdater.on("download-progress", (progress, bytesPerSecond, percent, total, transferred) => {
+	console.log({progress, bytesPerSecond, percent, total, transferred})
+	const dialogOpts = {
+		type: 'info',
+		buttons: ['OK'],
+		title: 'INFO',
+		message: percent,
+		detail: 'fazendo download...'
+	};
+	dialog.showMessageBox(dialogOpts).then((returnValue) => {
+		console.log({returnValue})
+	})
+})
+
