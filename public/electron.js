@@ -35,9 +35,9 @@ const createWindow = () => {
 		require('react-devtools-electron');
 	};
 
-	// if (!isDev) {
-	// 	autoUpdater.checkForUpdates();
-	// };
+	if (!isDev) {
+		autoUpdater.checkForUpdatesAndNotify();
+	};
 };
 
 // This method will be called when Electron has finished
@@ -67,37 +67,37 @@ ipcMain.handle('check-for-updates', () => {
 });
 
 autoUpdater.on("update-available", (_event, releaseNotes, releaseName) => {
-	const dialogOpts = {
-		type: 'info',
-		buttons: ['Ok'],
-		title: 'Application Update',
-		message: process.platform === 'win32' ? releaseNotes : releaseName,
-		detail: 'A new version is being downloaded.'
-	}
-	dialog.showMessageBox(dialogOpts, (response) => {
+	// const dialogOpts = {
+	// 	type: 'info',
+	// 	buttons: ['Ok'],
+	// 	title: 'Application Update',
+	// 	message: process.platform === 'win32' ? releaseNotes : releaseName,
+	// 	detail: 'A new version is being downloaded.'
+	// }
+	// dialog.showMessageBox(dialogOpts, (response) => {
 
-	});
+	// });
 
 	win.webContents.send('update-available');
 })
 
 autoUpdater.on("update-downloaded", (_event, releaseNotes, releaseName) => {
-	const dialogOpts = {
-		type: 'info',
-		buttons: ['Restart', 'Later'],
-		title: 'Application Update',
-		message: process.platform === 'win32' ? releaseNotes : releaseName,
-		detail: 'A new version has been downloaded. Restart the application to apply the updates.'
-	};
+	// const dialogOpts = {
+	// 	type: 'info',
+	// 	buttons: ['Restart', 'Later'],
+	// 	title: 'Application Update',
+	// 	message: process.platform === 'win32' ? releaseNotes : releaseName,
+	// 	detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+	// };
 
-	dialog.showMessageBox(dialogOpts).then((returnValue) => {
-		if (returnValue.response === 0) autoUpdater.quitAndInstall()
-	})
+	// dialog.showMessageBox(dialogOpts).then((returnValue) => {
+	// 	if (returnValue.response === 0) autoUpdater.quitAndInstall()
+	// })
 
 	win.webContents.send('update-downloaded');
 });
 
-autoUpdater.on("download-progress", (progress, bytesPerSecond, percent, total, transferred) => {
+autoUpdater.on("download-progress", (progress) => {
 	// const dialogOpts = {
 	// 	type: 'info',
 	// 	buttons: ['OK'],
@@ -111,5 +111,7 @@ autoUpdater.on("download-progress", (progress, bytesPerSecond, percent, total, t
 	// })
 
 	// win.webContents.send('download-progress');
+
+	win.webContents.send('download-progress', progress.percent);
 });
 
