@@ -121,3 +121,7 @@ autoUpdater.on("download-progress", (progress) => {
 	win.webContents.send('download-progress', progress.percent);
 });
 
+autoUpdater.on("quit-and-install", () => {
+	autoUpdater.quitAndInstall()
+})
+
