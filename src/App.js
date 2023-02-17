@@ -6,6 +6,7 @@ function App() {
 	const [version, setVersion] = useState('');
 	const [updateAvailable, setUpdateAvailable] = useState(false);
 	const [downloadProgress, setDownloadProgress] = useState(0);
+	const [updateDownloaded, setUpdateDownloaded] = useState(false);
 
 	useEffect(() => {
 		window.ipcRenderer.on('update-available', () => {
@@ -13,11 +14,12 @@ function App() {
 		});
 
 		window.ipcRenderer.on('download-progress', (event, progress) => {
+			console.log(progress);
 			setDownloadProgress(progress);
 		});
 
 		window.ipcRenderer.on('update-downloaded', () => {
-			window.ipcRenderer.send('quit-and-install');
+			setUpdateDownloaded(true);
 		});
 	}, []);
 
@@ -42,10 +44,16 @@ function App() {
 				<p>
 					Autoupdater Demo {version}
 				</p>
-				{updateAvailable && (
+				{updateAvailable && !updateDownloaded && (
 					<div>
-						<p>A new update is available. Downloading...</p>
+						<p>Downloading update...</p>
 						<progress value={downloadProgress} max="100"></progress>
+					</div>
+				)}
+				{updateDownloaded && (
+					<div>
+						<p>Update downloaded. Click the button to install and restart the app.</p>
+						<button onClick={() => window.ipcRenderer.send('quit-and-install')}>Install update</button>
 					</div>
 				)}
 			</header>
