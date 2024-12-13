@@ -6,7 +6,7 @@
 	"homepage": "./",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/mateuscruz22/autoupdater-demo"
+		"url": "https://github.com/Luikoodily/auto-demo"
 	},
 	"dependencies": {
 		"@testing-library/jest-dom": "^5.16.2",
